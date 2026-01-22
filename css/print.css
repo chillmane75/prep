@@ -63,3 +63,6 @@ h2 {
 section {
   margin-bottom: 8mm;
 }
+#settingsModal {
+  display: none !important;
+}
