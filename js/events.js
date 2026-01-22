@@ -2,6 +2,7 @@ import { addPrepTask } from "./db.js";
 
 const addPrepModal = document.getElementById("addPrepModal");
 const addPrepForm = document.getElementById("addPrepForm");
+const allergenDropdown = document.getElementById("allergenDropdown");
 
 document.getElementById("openAddForm").onclick = () => {
   addPrepModal.hidden = false;
@@ -10,11 +11,11 @@ document.getElementById("openAddForm").onclick = () => {
 document.getElementById("cancelAdd").onclick = () => {
   addPrepModal.hidden = true;
   addPrepForm.reset();
+  allergenDropdown.hidden = true;
 };
 
 document.getElementById("toggleAllergens").onclick = () => {
-  const box = document.getElementById("allergenDropdown");
-  box.hidden = !box.hidden;
+  allergenDropdown.hidden = !allergenDropdown.hidden;
 };
 
 addPrepForm.onsubmit = async (e) => {
@@ -26,7 +27,7 @@ addPrepForm.onsubmit = async (e) => {
   const comment = document.getElementById("comment").value.trim();
 
   const allergens = Array.from(
-    document.querySelectorAll("#allergenDropdown input:checked")
+    allergenDropdown.querySelectorAll("input:checked")
   ).map(cb => cb.value);
 
   await addPrepTask({
@@ -38,6 +39,6 @@ addPrepForm.onsubmit = async (e) => {
   });
 
   addPrepForm.reset();
-  document.getElementById("allergenDropdown").hidden = true;
+  allergenDropdown.hidden = true;
   addPrepModal.hidden = true;
 };
