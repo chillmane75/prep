@@ -11,7 +11,6 @@
     appId: "1:986168499689:web:8133e23a6012c957e87f78"
   };
 
-  // Last Firebase SDK (compat)
   const appScript = document.createElement("script");
   appScript.src =
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js";
@@ -28,16 +27,10 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    /*********************************************************
-     * STATE
-     *********************************************************/
     let allTasks = [];
     let currentArea = null;
     let showDone = false;
 
-    /*********************************************************
-     * ELEMENTER
-     *********************************************************/
     const activeList = document.getElementById("activeList");
     const doneList = document.getElementById("doneList");
     const toggleDoneBtn = document.getElementById("toggleDone");
@@ -50,9 +43,6 @@
     const settingsModal = document.getElementById("settingsModal");
     const mainContent = document.getElementById("mainContent");
 
-    /*********************************************************
-     * UI HANDLERS
-     *********************************************************/
     document.getElementById("openAddForm").onclick = () => {
       addPrepModal.hidden = false;
     };
@@ -84,9 +74,6 @@
 
     document.getElementById("printBtn").onclick = () => window.print();
 
-    /*********************************************************
-     * ADD PREP
-     *********************************************************/
     addPrepForm.onsubmit = async (e) => {
       e.preventDefault();
 
@@ -97,7 +84,7 @@
 
       const allergens = Array.from(
         allergenDropdown.querySelectorAll("input:checked")
-      ).map((cb) => cb.value);
+      ).map(cb => cb.value);
 
       await db.collection("prepTasks").add({
         title,
@@ -115,18 +102,15 @@
       addPrepModal.hidden = true;
     };
 
-    /*********************************************************
-     * RENDER PREP
-     *********************************************************/
     function render() {
       activeList.innerHTML = "";
       doneList.innerHTML = "";
 
       const visible = currentArea
-        ? allTasks.filter((t) => t.category === currentArea)
+        ? allTasks.filter(t => t.category === currentArea)
         : allTasks;
 
-      visible.forEach((task) => {
+      visible.forEach(task => {
         const el = document.createElement("div");
         el.className = "task-row";
 
@@ -139,77 +123,58 @@
         `;
 
         el.querySelector("button").onclick = async () => {
-          await db
-            .collection("prepTasks")
-            .doc(task.id)
-            .update({
-              status: task.status === "active" ? "done" : "active",
-              completedAt:
-                task.status === "active"
-                  ? firebase.firestore.FieldValue.serverTimestamp()
-                  : null
-            });
+          await db.collection("prepTasks").doc(task.id).update({
+            status: task.status === "active" ? "done" : "active",
+            completedAt:
+              task.status === "active"
+                ? firebase.firestore.FieldValue.serverTimestamp()
+                : null
+          });
         };
 
         (task.status === "active" ? activeList : doneList).appendChild(el);
       });
     }
 
-    /*********************************************************
-     * SNAPSHOT: PREP
-     *********************************************************/
     db.collection("prepTasks")
       .orderBy("createdAt")
-      .onSnapshot((snap) => {
-        allTasks = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      .onSnapshot(snap => {
+        allTasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         render();
       });
 
-    /*********************************************************
-     * SNAPSHOT: OMRÅDER (TABS + DROPDOWN + INNSTILLINGER)
-     *********************************************************/
     db.collection("settings")
       .doc("areas")
-      .onSnapshot((doc) => {
+      .onSnapshot(doc => {
         const areas = doc.exists ? doc.data().areas : [];
 
-        // Tabs
         areaTabs.innerHTML = "";
+        document.getElementById("category").innerHTML = "";
 
-        // Dropdown i add prep
-        const categorySelect = document.getElementById("category");
-        categorySelect.innerHTML = "";
-
-        // Liste i innstillinger
         const areasList = document.getElementById("areasList");
         areasList.innerHTML = "";
 
-        areas.forEach((a) => {
-          /* TAB */
-          const btn = document.createElement("button");
-          btn.textContent = a;
-          btn.onclick = () => {
+        areas.forEach(a => {
+          const tab = document.createElement("button");
+          tab.textContent = a;
+          tab.onclick = () => {
             currentArea = currentArea === a ? null : a;
             render();
           };
-          areaTabs.appendChild(btn);
+          areaTabs.appendChild(tab);
 
-          /* DROPDOWN */
           const opt = document.createElement("option");
           opt.value = a;
           opt.textContent = a;
-          categorySelect.appendChild(opt);
+          document.getElementById("category").appendChild(opt);
 
-          /* SETTINGS LIST */
           const row = document.createElement("div");
+          row.className = "settings-area-row";
           row.textContent = a;
           areasList.appendChild(row);
         });
       });
 
-    /*********************************************************
-     * SETTINGS ACTIONS
-     *********************************************************/
     document.getElementById("addAreaBtn").onclick = async () => {
       const input = document.getElementById("newArea");
       const value = input.value.trim().toLowerCase();
@@ -230,12 +195,9 @@
       if (!confirm("Slette ALL prep og ALLE områder?")) return;
 
       const batch = db.batch();
-
       const prepSnap = await db.collection("prepTasks").get();
-      prepSnap.forEach((d) => batch.delete(d.ref));
-
+      prepSnap.forEach(d => batch.delete(d.ref));
       batch.delete(db.collection("settings").doc("areas"));
-
       await batch.commit();
     };
   }
