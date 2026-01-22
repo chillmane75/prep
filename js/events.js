@@ -1,4 +1,4 @@
-import { addTask } from "./db.js";
+import { addTask, resetAllTasks } from "./db.js";
 
 const modal = document.getElementById("addPrepModal");
 const openBtn = document.getElementById("openAddForm");
@@ -6,6 +6,7 @@ const cancelBtn = document.getElementById("cancelAdd");
 const form = document.getElementById("addPrepForm");
 const toggleDoneBtn = document.getElementById("toggleDone");
 const doneList = document.getElementById("doneList");
+const resetBtn = document.getElementById("resetBtn");
 
 openBtn.addEventListener("click", () => {
   modal.hidden = false;
@@ -18,12 +19,12 @@ cancelBtn.addEventListener("click", () => {
 form.addEventListener("submit", e => {
   e.preventDefault();
 
-  const title = document.getElementById("title").value;
-  const category = document.getElementById("category").value;
-  const priority = document.getElementById("priority").value;
-  const comment = document.getElementById("comment").value;
-
-  addTask({ title, category, priority, comment });
+  addTask({
+    title: title.value,
+    category: category.value,
+    priority: priority.value,
+    comment: comment.value
+  });
 
   form.reset();
   modal.hidden = true;
@@ -31,4 +32,13 @@ form.addEventListener("submit", e => {
 
 toggleDoneBtn.addEventListener("click", () => {
   doneList.hidden = !doneList.hidden;
+});
+
+resetBtn.addEventListener("click", async () => {
+  const ok = confirm(
+    "Er du HELT sikker?\n\nDette sletter ALL aktiv og ferdig prep for alle."
+  );
+  if (!ok) return;
+
+  await resetAllTasks();
 });
