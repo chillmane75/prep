@@ -3,16 +3,22 @@ import {
   collection,
   addDoc,
   updateDoc,
+  deleteDoc,
   doc,
+  getDocs,
   onSnapshot,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const col = collection(db, "prepTasks");
 
-export function listenTasks(cb) {
+export function listenTasks(callback) {
   onSnapshot(col, snap => {
-    cb(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    const tasks = snap.docs.map(d => ({
+      id: d.id,
+      ...d.data()
+    }));
+    callback(tasks);
   });
 }
 
@@ -37,4 +43,9 @@ export function undoTask(id) {
     status: "active",
     completedAt: null
   });
+}
+
+export async function resetAllTasks() {
+  const snap = await getDocs(col);
+  await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
 }
