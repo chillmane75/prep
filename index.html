@@ -1,1 +1,63 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kjøkken Prep</title>
 
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+</head>
+<body>
+
+  <header>
+    <h1>Prep-liste</h1>
+    <button id="openAddForm">+ Legg til prep</button>
+  </header>
+
+  <main>
+    <section id="activePrep">
+      <h2>Aktiv prep</h2>
+      <div id="activeList"></div>
+    </section>
+
+    <section id="donePrep">
+      <button id="toggleDone">Ferdig prep</button>
+      <div id="doneList" hidden></div>
+    </section>
+  </main>
+
+  <section id="addPrepModal" hidden>
+    <form id="addPrepForm">
+      <input type="text" id="title" placeholder="Hva skal gjøres?" required>
+
+      <select id="category">
+        <option value="grill">Grill</option>
+        <option value="kald">Kald</option>
+        <option value="dessert">Dessert</option>
+        <option value="servering">Servering</option>
+      </select>
+
+      <select id="priority">
+        <option value="high">Høy</option>
+        <option value="normal">Normal</option>
+        <option value="low">Lav</option>
+      </select>
+
+      <textarea id="comment" placeholder="Kommentar / notat"></textarea>
+
+      <button type="submit">Lagre</button>
+      <button type="button" id="cancelAdd">Avbryt</button>
+    </form>
+  </section>
+
+  <button id="printBtn">Print A4</button>
+
+  <script type="module" src="js/firebase.js"></script>
+  <script type="module" src="js/db.js"></script>
+  <script type="module" src="js/ui.js"></script>
+  <script type="module" src="js/events.js"></script>
+  <script type="module" src="js/print.js"></script>
+
+</body>
+</html>
