@@ -5,122 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kjøkken Prep</title>
 
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/print.css" media="print">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #0f1115;
+    }
+
+    iframe {
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  <h1>Prep-liste</h1>
-  <div class="header-actions">
-    <button id="openAddForm">+ Legg til prep</button>
-    <button id="printBtn">Print A4</button>
-    <button id="openSettings">⚙️</button>
-  </div>
-</header>
-
-<main id="mainContent">
-  <div id="areaTabs"></div>
-
-  <section>
-    <h2>Aktiv prep</h2>
-    <div id="activeList"></div>
-  </section>
-
-  <section>
-    <button id="toggleDone">Vis ferdig prep</button>
-    <div id="doneList" hidden></div>
-  </section>
-</main>
-
-<!-- ================= ADD PREP ================= -->
-<section id="addPrepModal" hidden>
-  <form id="addPrepForm" class="add-prep-card">
-    <h2>Ny prep</h2>
-
-    <div class="form-row">
-      <input id="title" placeholder="Hva skal gjøres?" required>
-      <select id="category"></select>
-      <select id="priority">
-        <option value="high">Høy</option>
-        <option value="normal">Normal</option>
-        <option value="low">Lav</option>
-      </select>
-    </div>
-
-    <textarea id="comment" placeholder="Kommentar"></textarea>
-
-    <div class="allergen-section">
-      <button type="button" id="toggleAllergens" class="secondary">
-        Allergener
-      </button>
-
-      <div id="allergenDropdown" hidden class="allergen-dropdown">
-        <label><input type="checkbox" value="gluten"> Gluten</label>
-        <label><input type="checkbox" value="sesamfrø"> Sesamfrø</label>
-        <label><input type="checkbox" value="nøtter"> Nøtter</label>
-        <label><input type="checkbox" value="skalldyr"> Skalldyr</label>
-        <label><input type="checkbox" value="egg"> Egg</label>
-        <label><input type="checkbox" value="fisk"> Fisk</label>
-        <label><input type="checkbox" value="sennep"> Sennep</label>
-        <label><input type="checkbox" value="melk"> Melk</label>
-        <label><input type="checkbox" value="selleri"> Selleri</label>
-        <label><input type="checkbox" value="peanøtter"> Peanøtter</label>
-        <label><input type="checkbox" value="soya"> Soya</label>
-        <label><input type="checkbox" value="bløtdyr"> Bløtdyr</label>
-        <label><input type="checkbox" value="lupin"> Lupin</label>
-        <label><input type="checkbox" value="sulfitter"> Sulfitter</label>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button type="submit">Lagre</button>
-      <button type="button" id="cancelAdd" class="secondary">Avbryt</button>
-    </div>
-  </form>
-</section>
-
-<!-- ================= SETTINGS ================= -->
-<section id="settingsModal" hidden>
-  <div class="settings-container">
-    <h2>Innstillinger</h2>
-
-    <h3>Områder</h3>
-    <div id="areasList"></div>
-
-    <input id="newArea" placeholder="Nytt område">
-    <button id="addAreaBtn">Legg til område</button>
-
-    <hr>
-
-    <button id="resetBtn" class="danger">
-      Nullstill ALT (prep + områder)
-    </button>
-
-    <button id="closeSettings">Lukk</button>
-  </div>
-</section>
-
-<!-- ================= AREA DELETE FLOW ================= -->
-<section id="areaFlowModal" hidden>
-  <div class="add-prep-card">
-    <h2 id="areaFlowTitle"></h2>
-
-    <div id="areaFlowBody"></div>
-
-    <div class="actions">
-      <button id="areaFlowBack" class="secondary">Tilbake</button>
-      <button id="areaFlowCancel" class="secondary">Avbryt</button>
-    </div>
-  </div>
-</section>
-
-<!-- ================= SCRIPTS ================= -->
-<script type="module" src="js/firebase.js"></script>
-<script type="module" src="js/db.js"></script>
-<script type="module" src="js/ui.js"></script>
-<script type="module" src="js/events.js"></script>
-<script type="module" src="js/print.js"></script>
+  <iframe
+    src="app.html"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"
+  ></iframe>
 
 </body>
 </html>
