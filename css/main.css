@@ -20,7 +20,6 @@ body {
   font-family: system-ui, sans-serif;
 }
 
-/* HEADER */
 header {
   display: flex;
   justify-content: space-between;
@@ -32,34 +31,6 @@ header {
   gap: .5rem;
 }
 
-/* AREA TABS */
-#areaTabs {
-  display: flex;
-  gap: .5rem;
-  margin: 1rem 0;
-}
-
-/* TASK ROW */
-.task-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--card);
-  padding: .75rem 1rem;
-  border-radius: 12px;
-  margin-bottom: .5rem;
-}
-
-.task-info span {
-  display: block;
-  font-size: .8rem;
-  color: var(--muted);
-}
-
-.done-btn {
-  background: var(--ok);
-}
-
 button {
   background: var(--accent);
   border: none;
@@ -67,6 +38,10 @@ button {
   padding: .5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
+}
+
+button.secondary {
+  background: #2a2e3a;
 }
 
 button.danger {
@@ -79,19 +54,69 @@ button.danger {
   position: fixed;
   inset: 0;
   background: var(--bg);
-  padding: 1rem;
+  padding: 2rem;
   z-index: 10;
 }
 
+/* -------- ADD PREP UI (NY, ISOLERT) -------- */
+
+.add-prep-card {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--card);
+  padding: 1.5rem;
+  border-radius: 16px;
+}
+
+.add-prep-card h2 {
+  margin-top: 0;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: .5rem;
+  margin-bottom: .75rem;
+}
+
+.add-prep-card input,
+.add-prep-card select,
+.add-prep-card textarea {
+  background: #0f121a;
+  color: var(--text);
+  border: 1px solid #2a2e3a;
+  border-radius: 8px;
+  padding: .5rem;
+}
+
+.add-prep-card textarea {
+  width: 100%;
+  min-height: 60px;
+  margin-bottom: .75rem;
+}
+
+.allergen-section {
+  margin-bottom: 1rem;
+}
+
+.allergen-dropdown {
+  margin-top: .5rem;
+  background: #0f121a;
+  border: 1px solid #2a2e3a;
+  border-radius: 8px;
+  padding: .75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .25rem .75rem;
+}
+
+.actions {
+  display: flex;
+  gap: .5rem;
+  justify-content: flex-end;
+}
+
 /* PRIORITY */
-.priority-high {
-  border-left: 6px solid #fff;
-}
-
-.priority-normal {
-  border-left: 3px solid #fff;
-}
-
-.priority-low {
-  border-left: 1px solid #fff;
-}
+.priority-high { border-left: 6px solid #fff; }
+.priority-normal { border-left: 3px solid #fff; }
+.priority-low { border-left: 1px solid #fff; }
