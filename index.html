@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="no">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kjøkken Prep</title>
 
   <link rel="stylesheet" href="css/main.css">
@@ -39,9 +39,7 @@
     <h2>Ny prep</h2>
 
     <input id="title" placeholder="Hva skal gjøres?" required>
-
     <select id="category"></select>
-
     <select id="priority">
       <option value="high">Høy</option>
       <option value="normal">Normal</option>
@@ -50,9 +48,12 @@
 
     <textarea id="comment" placeholder="Kommentar"></textarea>
 
-    <button type="button" id="toggleAllergens">Allergener</button>
+    <!-- ALLERGENER -->
+    <button type="button" id="toggleAllergens">
+      Allergener
+    </button>
 
-    <div id="allergenDropdown" hidden class="allergen-box">
+    <div id="allergenDropdown" hidden>
       <label><input type="checkbox" value="gluten"> Gluten</label>
       <label><input type="checkbox" value="sesamfrø"> Sesamfrø</label>
       <label><input type="checkbox" value="nøtter"> Nøtter</label>
@@ -76,19 +77,13 @@
   </form>
 </section>
 
-<!-- SETTINGS -->
+<!-- SETTINGS (uendret) -->
 <section id="settingsModal" hidden>
   <div class="settings-container">
     <h2>Innstillinger</h2>
-
-    <h3>Områder</h3>
     <div id="areasList"></div>
-
     <input id="newArea" placeholder="Nytt område">
     <button id="addAreaBtn">Legg til område</button>
-
-    <hr>
-
     <button id="resetBtn" class="danger">Nullstill hele prep-listen</button>
     <button id="closeSettings">Lukk</button>
   </div>
