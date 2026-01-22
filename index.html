@@ -10,54 +10,56 @@
 </head>
 <body>
 
-  <header>
-    <h1>Prep-liste</h1>
-    <button id="openAddForm">+ Legg til prep</button>
-  </header>
+<header>
+  <h1>Prep-liste</h1>
+  <button id="openAddForm">+ Legg til prep</button>
+</header>
 
-  <main>
-    <section id="activePrep">
-      <h2>Aktiv prep</h2>
-      <div id="activeList"></div>
-    </section>
-
-    <section id="donePrep">
-      <button id="toggleDone">Ferdig prep</button>
-      <div id="doneList" hidden></div>
-    </section>
-  </main>
-
-  <section id="addPrepModal" hidden>
-    <form id="addPrepForm">
-      <input type="text" id="title" placeholder="Hva skal gjøres?" required>
-
-      <select id="category">
-        <option value="grill">Grill</option>
-        <option value="kald">Kald</option>
-        <option value="dessert">Dessert</option>
-        <option value="servering">Servering</option>
-      </select>
-
-      <select id="priority">
-        <option value="high">Høy</option>
-        <option value="normal">Normal</option>
-        <option value="low">Lav</option>
-      </select>
-
-      <textarea id="comment" placeholder="Kommentar / notat"></textarea>
-
-      <button type="submit">Lagre</button>
-      <button type="button" id="cancelAdd">Avbryt</button>
-    </form>
+<main>
+  <section>
+    <h2>Aktiv prep</h2>
+    <div id="activeList"></div>
   </section>
 
-  <button id="printBtn">Print A4</button>
+  <section>
+    <button id="toggleDone">Vis ferdig prep</button>
+    <div id="doneList" hidden></div>
+  </section>
+</main>
 
-  <script type="module" src="js/firebase.js"></script>
-  <script type="module" src="js/db.js"></script>
-  <script type="module" src="js/ui.js"></script>
-  <script type="module" src="js/events.js"></script>
-  <script type="module" src="js/print.js"></script>
+<section id="addPrepModal" hidden>
+  <form id="addPrepForm">
+    <input id="title" placeholder="Hva skal gjøres?" required>
+
+    <select id="category">
+      <option value="grill">Grill</option>
+      <option value="kald">Kald</option>
+      <option value="dessert">Dessert</option>
+      <option value="servering">Servering</option>
+    </select>
+
+    <select id="priority">
+      <option value="high">Høy</option>
+      <option value="normal">Normal</option>
+      <option value="low">Lav</option>
+    </select>
+
+    <textarea id="comment" placeholder="Kommentar"></textarea>
+
+    <div class="actions">
+      <button type="submit">Lagre</button>
+      <button type="button" id="cancelAdd">Avbryt</button>
+    </div>
+  </form>
+</section>
+
+<button id="printBtn">Print A4</button>
+
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/db.js"></script>
+<script type="module" src="js/ui.js"></script>
+<script type="module" src="js/events.js"></script>
+<script type="module" src="js/print.js"></script>
 
 </body>
 </html>
