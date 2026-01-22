@@ -18,15 +18,16 @@ onSnapshot(q, (snap) => {
 
   snap.forEach(docSnap => {
     const task = docSnap.data();
+
     const el = document.createElement("div");
     el.className = `prep-item priority-${task.priority}`;
 
     el.innerHTML = `
-      <div class="prep-main">
+      <div>
         <strong>${task.title}</strong>
         ${task.comment ? `<div class="comment">${task.comment}</div>` : ""}
         ${
-          task.allergens && task.allergens.length
+          task.allergens?.length
             ? `<div class="allergens">Allergener: ${task.allergens.join(", ")}</div>`
             : ""
         }
@@ -36,10 +37,6 @@ onSnapshot(q, (snap) => {
 
     el.querySelector(".done-btn").onclick = () => markDone(docSnap.id);
 
-    if (task.status === "active") {
-      activeList.appendChild(el);
-    } else {
-      doneList.appendChild(el);
-    }
+    (task.status === "active" ? activeList : doneList).appendChild(el);
   });
 });
