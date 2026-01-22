@@ -2,6 +2,20 @@
 <html lang="no">
 <head>
   <meta charset="UTF-8" />
+
+  <!-- CSP: blokkerer injected scripts fra extensions -->
+  <meta http-equiv="Content-Security-Policy"
+        content="
+          default-src 'self';
+          script-src 'self' https://www.gstatic.com;
+          style-src 'self' 'unsafe-inline';
+          connect-src 'self'
+            https://firestore.googleapis.com
+            https://www.googleapis.com;
+          img-src 'self' data:;
+          font-src 'self';
+        ">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kjøkken Prep</title>
 
@@ -101,7 +115,7 @@
   </div>
 </section>
 
-<!-- ================= AREA DELETE FLOW POPUP ================= -->
+<!-- ================= AREA DELETE FLOW ================= -->
 <section id="areaFlowModal" hidden>
   <div class="add-prep-card">
     <h2 id="areaFlowTitle"></h2>
@@ -115,6 +129,7 @@
   </div>
 </section>
 
+<!-- ================= SCRIPTS ================= -->
 <script type="module" src="js/firebase.js"></script>
 <script type="module" src="js/db.js"></script>
 <script type="module" src="js/ui.js"></script>
