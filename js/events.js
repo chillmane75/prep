@@ -18,6 +18,9 @@ const prioritySelect = document.getElementById("priority");
 const commentInput = document.getElementById("comment");
 const allergenDropdown = document.getElementById("allergenDropdown");
 
+const areasList = document.getElementById("areasList");
+const newAreaInput = document.getElementById("newArea");
+
 /* ---------- ADD PREP ---------- */
 
 document.getElementById("openAddForm").onclick = () => {
@@ -52,7 +55,7 @@ addPrepForm.onsubmit = async (e) => {
   addPrepModal.hidden = true;
 };
 
-/* ---------- SETTINGS ---------- */
+/* ---------- SETTINGS OPEN / CLOSE ---------- */
 
 const settingsModal = document.getElementById("settingsModal");
 const mainContent = document.getElementById("mainContent");
@@ -74,13 +77,21 @@ document.getElementById("resetBtn").onclick = async () => {
   await resetEverything();
 };
 
-/* ---------- OMRÅDER (kun lesing nå) ---------- */
+/* ---------- OMRÅDER ---------- */
 
 const areasRef = doc(db, "settings", "areas");
 
-onSnapshot(areasRef, snap => {
-  if (!snap.exists()) return;
-  const areas = snap.data().areas || [];
+/* Render områder + category dropdown */
+function renderAreas(areas) {
+  // Settings-listen
+  areasList.innerHTML = "";
+  areas.forEach(a => {
+    const div = document.createElement("div");
+    div.textContent = a;
+    areasList.appendChild(div);
+  });
+
+  // Add-prep dropdown
   categorySelect.innerHTML = "";
   areas.forEach(a => {
     const opt = document.createElement("option");
@@ -88,4 +99,31 @@ onSnapshot(areasRef, snap => {
     opt.textContent = a;
     categorySelect.appendChild(opt);
   });
+}
+
+/* Snapshot */
+onSnapshot(areasRef, snap => {
+  if (!snap.exists()) {
+    // VIKTIG: nullstill dropdown når områder er slettet
+    renderAreas([]);
+    return;
+  }
+
+  const areas = snap.data().areas || [];
+  renderAreas(areas);
 });
+
+/* Legg til område */
+document.getElementById("addAreaBtn").onclick = async () => {
+  const value = newAreaInput.value.trim().toLowerCase();
+  if (!value) return;
+
+  const snap = await getDoc(areasRef);
+  const areas = snap.exists() ? snap.data().areas : [];
+
+  if (!areas.includes(value)) {
+    await setDoc(areasRef, { areas: [...areas, value] });
+  }
+
+  newAreaInput.value = "";
+};
