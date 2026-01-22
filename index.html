@@ -35,49 +35,52 @@
 
 <!-- ADD PREP -->
 <section id="addPrepModal" hidden>
-  <form id="addPrepForm">
+  <form id="addPrepForm" class="add-prep-card">
     <h2>Ny prep</h2>
 
-    <input id="title" placeholder="Hva skal gjøres?" required>
-    <select id="category"></select>
-    <select id="priority">
-      <option value="high">Høy</option>
-      <option value="normal">Normal</option>
-      <option value="low">Lav</option>
-    </select>
+    <div class="form-row">
+      <input id="title" placeholder="Hva skal gjøres?" required>
+      <select id="category"></select>
+      <select id="priority">
+        <option value="high">Høy</option>
+        <option value="normal">Normal</option>
+        <option value="low">Lav</option>
+      </select>
+    </div>
 
     <textarea id="comment" placeholder="Kommentar"></textarea>
 
-    <!-- ALLERGENER -->
-    <button type="button" id="toggleAllergens">
-      Allergener
-    </button>
+    <div class="allergen-section">
+      <button type="button" id="toggleAllergens" class="secondary">
+        Allergener
+      </button>
 
-    <div id="allergenDropdown" hidden>
-      <label><input type="checkbox" value="gluten"> Gluten</label>
-      <label><input type="checkbox" value="sesamfrø"> Sesamfrø</label>
-      <label><input type="checkbox" value="nøtter"> Nøtter</label>
-      <label><input type="checkbox" value="skalldyr"> Skalldyr</label>
-      <label><input type="checkbox" value="egg"> Egg</label>
-      <label><input type="checkbox" value="fisk"> Fisk</label>
-      <label><input type="checkbox" value="sennep"> Sennep</label>
-      <label><input type="checkbox" value="melk"> Melk</label>
-      <label><input type="checkbox" value="selleri"> Selleri</label>
-      <label><input type="checkbox" value="peanøtter"> Peanøtter</label>
-      <label><input type="checkbox" value="soya"> Soya</label>
-      <label><input type="checkbox" value="bløtdyr"> Bløtdyr</label>
-      <label><input type="checkbox" value="lupin"> Lupin</label>
-      <label><input type="checkbox" value="sulfitter"> Sulfitter</label>
+      <div id="allergenDropdown" hidden class="allergen-dropdown">
+        <label><input type="checkbox" value="gluten"> Gluten</label>
+        <label><input type="checkbox" value="sesamfrø"> Sesamfrø</label>
+        <label><input type="checkbox" value="nøtter"> Nøtter</label>
+        <label><input type="checkbox" value="skalldyr"> Skalldyr</label>
+        <label><input type="checkbox" value="egg"> Egg</label>
+        <label><input type="checkbox" value="fisk"> Fisk</label>
+        <label><input type="checkbox" value="sennep"> Sennep</label>
+        <label><input type="checkbox" value="melk"> Melk</label>
+        <label><input type="checkbox" value="selleri"> Selleri</label>
+        <label><input type="checkbox" value="peanøtter"> Peanøtter</label>
+        <label><input type="checkbox" value="soya"> Soya</label>
+        <label><input type="checkbox" value="bløtdyr"> Bløtdyr</label>
+        <label><input type="checkbox" value="lupin"> Lupin</label>
+        <label><input type="checkbox" value="sulfitter"> Sulfitter</label>
+      </div>
     </div>
 
     <div class="actions">
       <button type="submit">Lagre</button>
-      <button type="button" id="cancelAdd">Avbryt</button>
+      <button type="button" id="cancelAdd" class="secondary">Avbryt</button>
     </div>
   </form>
 </section>
 
-<!-- SETTINGS (uendret) -->
+<!-- SETTINGS -->
 <section id="settingsModal" hidden>
   <div class="settings-container">
     <h2>Innstillinger</h2>
