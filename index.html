@@ -15,11 +15,10 @@
   <div class="header-actions">
     <button id="openAddForm">+ Legg til prep</button>
     <button id="openSettings">⚙️</button>
-    <button id="printBtn">Print</button>
   </div>
 </header>
 
-<main>
+<main id="mainContent">
 
   <div id="areaTabs"></div>
 
@@ -61,23 +60,22 @@
 
 <!-- SETTINGS -->
 <section id="settingsModal" hidden>
-  <form id="settingsForm">
+  <div class="settings-container">
     <h2>Innstillinger</h2>
 
     <h3>Områder</h3>
     <div id="areasList"></div>
 
     <input id="newArea" placeholder="Nytt område">
-    <button type="button" id="addAreaBtn">Legg til område</button>
+    <button id="addAreaBtn">Legg til område</button>
 
     <hr>
 
-    <button type="button" id="resetBtn" class="danger">
-      Nullstill hele prep-listen
-    </button>
+    <button id="printBtn">Print A4</button>
+    <button id="resetBtn" class="danger">Nullstill hele prep-listen</button>
 
-    <button type="button" id="closeSettings">Lukk</button>
-  </form>
+    <button id="closeSettings">Lukk</button>
+  </div>
 </section>
 
 <script type="module" src="js/firebase.js"></script>
