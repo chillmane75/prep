@@ -20,7 +20,6 @@
 </header>
 
 <main id="mainContent">
-
   <div id="areaTabs"></div>
 
   <section>
@@ -32,7 +31,6 @@
     <button id="toggleDone">Vis ferdig prep</button>
     <div id="doneList" hidden></div>
   </section>
-
 </main>
 
 <!-- ADD PREP -->
@@ -51,6 +49,25 @@
     </select>
 
     <textarea id="comment" placeholder="Kommentar"></textarea>
+
+    <button type="button" id="toggleAllergens">Allergener</button>
+
+    <div id="allergenDropdown" hidden class="allergen-box">
+      <label><input type="checkbox" value="gluten"> Gluten</label>
+      <label><input type="checkbox" value="sesamfrø"> Sesamfrø</label>
+      <label><input type="checkbox" value="nøtter"> Nøtter</label>
+      <label><input type="checkbox" value="skalldyr"> Skalldyr</label>
+      <label><input type="checkbox" value="egg"> Egg</label>
+      <label><input type="checkbox" value="fisk"> Fisk</label>
+      <label><input type="checkbox" value="sennep"> Sennep</label>
+      <label><input type="checkbox" value="melk"> Melk</label>
+      <label><input type="checkbox" value="selleri"> Selleri</label>
+      <label><input type="checkbox" value="peanøtter"> Peanøtter</label>
+      <label><input type="checkbox" value="soya"> Soya</label>
+      <label><input type="checkbox" value="bløtdyr"> Bløtdyr</label>
+      <label><input type="checkbox" value="lupin"> Lupin</label>
+      <label><input type="checkbox" value="sulfitter"> Sulfitter</label>
+    </div>
 
     <div class="actions">
       <button type="submit">Lagre</button>
@@ -73,7 +90,6 @@
     <hr>
 
     <button id="resetBtn" class="danger">Nullstill hele prep-listen</button>
-
     <button id="closeSettings">Lukk</button>
   </div>
 </section>
