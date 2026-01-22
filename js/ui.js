@@ -1,5 +1,5 @@
 import { db } from "./firebase.js";
-import { markDone } from "./db.js";
+import { markDone, undoDone, deletePrep } from "./db.js";
 import {
   collection,
   onSnapshot,
@@ -10,10 +10,8 @@ import {
 const activeList = document.getElementById("activeList");
 const doneList = document.getElementById("doneList");
 const toggleDoneBtn = document.getElementById("toggleDone");
-const areaTabs = document.getElementById("areaTabs");
 
 let showDone = false;
-let currentArea = null;
 let allTasks = [];
 
 toggleDoneBtn.onclick = () => {
@@ -25,11 +23,7 @@ function render() {
   activeList.innerHTML = "";
   doneList.innerHTML = "";
 
-  const visible = currentArea
-    ? allTasks.filter(t => t.category === currentArea)
-    : allTasks;
-
-  visible.forEach(({ id, ...task }) => {
+  allTasks.forEach(task => {
     const el = document.createElement("div");
     el.className = `prep-item priority-${task.priority}`;
 
@@ -39,12 +33,34 @@ function render() {
         ${task.comment ? `<div class="comment">${task.comment}</div>` : ""}
         ${task.allergens?.length ? `<div class="allergens">Allergener: ${task.allergens.join(", ")}</div>` : ""}
       </div>
-      <button class="done-btn">GJORT</button>
+
+      <div style="display:flex; gap:.25rem">
+        ${
+          task.status === "active"
+            ? `<button class="done-btn">GJORT</button>`
+            : `<button class="secondary">ANGRE</button>`
+        }
+        <button class="danger">SLETT</button>
+      </div>
     `;
 
-    el.querySelector(".done-btn").onclick = () => markDone(id);
-
-    (task.status === "active" ? activeList : doneList).appendChild(el);
+    if (task.status === "active") {
+      el.querySelector(".done-btn").onclick = () => markDone(task.id);
+      el.querySelector(".danger").onclick = () => {
+        if (confirm("Slette denne prep-oppgaven?")) {
+          deletePrep(task.id);
+        }
+      };
+      activeList.appendChild(el);
+    } else {
+      el.querySelector(".secondary").onclick = () => undoDone(task.id);
+      el.querySelector(".danger").onclick = () => {
+        if (confirm("Slette denne prep-oppgaven?")) {
+          deletePrep(task.id);
+        }
+      };
+      doneList.appendChild(el);
+    }
   });
 }
 
@@ -53,24 +69,4 @@ const q = query(collection(db, "prepTasks"), orderBy("createdAt"));
 onSnapshot(q, snap => {
   allTasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   render();
-});
-
-/* --------- OMRÅDE TABS --------- */
-
-onSnapshot(collection(db, "settings"), snap => {
-  const doc = snap.docs.find(d => d.id === "areas");
-  if (!doc) return;
-
-  const areas = doc.data().areas || [];
-  areaTabs.innerHTML = "";
-
-  areas.forEach(area => {
-    const btn = document.createElement("button");
-    btn.textContent = area;
-    btn.onclick = () => {
-      currentArea = currentArea === area ? null : area;
-      render();
-    };
-    areaTabs.appendChild(btn);
-  });
 });
