@@ -84,10 +84,15 @@ button:hover {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,.7);
-  display: flex;
   align-items: center;
   justify-content: center;
 }
+
+/* Kun når modalen er synlig */
+#addPrepModal:not([hidden]) {
+  display: flex;
+}
+
 
 #addPrepModal form {
   background: var(--card);
