@@ -8,9 +8,7 @@
   --ok: #2e7d32;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -20,11 +18,11 @@ body {
   font-family: system-ui, sans-serif;
 }
 
+/* HEADER */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
 }
 
 .header-actions {
@@ -32,93 +30,84 @@ header {
   gap: .5rem;
 }
 
-button {
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: .6rem 1rem;
-  font-size: 1rem;
-  cursor: pointer;
+/* AREA TABS */
+#areaTabs {
+  display: flex;
+  gap: .5rem;
+  margin: 1rem 0;
 }
 
-button:hover {
-  opacity: .9;
+/* TASK ROW */
+.task-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  padding: .75rem 1rem;
+  border-radius: 12px;
+  margin-bottom: .5rem;
+}
+
+.task-info span {
+  display: block;
+  font-size: .8rem;
+  color: var(--muted);
+}
+
+.done-btn {
+  background: var(--ok);
+}
+
+button {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  padding: .5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 button.danger {
   background: var(--danger);
 }
 
-main {
-  margin-bottom: 2rem;
-}
-
-.task {
-  background: var(--card);
-  border-radius: 14px;
-  padding: 1rem;
-  margin-bottom: .75rem;
-}
-
-.task.high { border-left: 5px solid #d32f2f; }
-.task.normal { border-left: 5px solid #f9a825; }
-.task.low { border-left: 5px solid #388e3c; }
-
-.task-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.category {
-  font-size: .85rem;
-  color: var(--muted);
-}
-
-.done-btn {
-  width: 100%;
-  margin-top: .75rem;
-  background: var(--ok);
-}
-
-.undo-btn {
-  width: 100%;
-  margin-top: .75rem;
-  background: var(--danger);
-}
-
-#addPrepModal {
+/* MODALS */
+#addPrepModal,
+#settingsModal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.7);
+  background: rgba(0,0,0,.85);
+  display: none;
+}
+
+#addPrepModal:not([hidden]),
+#settingsModal:not([hidden]) {
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
-#addPrepModal:not([hidden]) {
-  display: flex;
+/* SETTINGS FULL SCREEN */
+.settings-container {
+  width: 100%;
+  max-width: 600px;
+  background: var(--card);
+  padding: 2rem;
+  border-radius: 16px;
 }
 
-#addPrepModal form {
-  background: var(--card);
-  padding: 1.5rem;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 420px;
+.area-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: .5rem;
 }
 
 input, select, textarea {
   width: 100%;
   margin-bottom: .75rem;
-  padding: .6rem;
+  padding: .5rem;
   background: #111;
   color: var(--text);
   border: 1px solid #333;
-  border-radius: 8px;
-}
-
-footer {
-  margin-top: 2rem;
-  text-align: center;
+  border-radius: 6px;
 }
