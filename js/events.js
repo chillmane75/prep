@@ -7,12 +7,19 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* ---------- ADD PREP ---------- */
+/* ---------- ELEMENTER ---------- */
 
 const addPrepModal = document.getElementById("addPrepModal");
 const addPrepForm = document.getElementById("addPrepForm");
-const allergenDropdown = document.getElementById("allergenDropdown");
+
+const titleInput = document.getElementById("title");
 const categorySelect = document.getElementById("category");
+const prioritySelect = document.getElementById("priority");
+const commentInput = document.getElementById("comment");
+
+const allergenDropdown = document.getElementById("allergenDropdown");
+
+/* ---------- ADD PREP ---------- */
 
 document.getElementById("openAddForm").onclick = () => {
   addPrepModal.hidden = false;
@@ -28,10 +35,12 @@ document.getElementById("toggleAllergens").onclick = () => {
   allergenDropdown.hidden = !allergenDropdown.hidden;
 };
 
-addPrepForm.onsubmit = async e => {
+addPrepForm.onsubmit = async (e) => {
   e.preventDefault();
 
   const title = titleInput.value.trim();
+  if (!title) return;
+
   const category = categorySelect.value;
   const priority = prioritySelect.value;
   const comment = commentInput.value.trim();
@@ -40,7 +49,13 @@ addPrepForm.onsubmit = async e => {
     allergenDropdown.querySelectorAll("input:checked")
   ).map(cb => cb.value);
 
-  await addPrepTask({ title, category, priority, comment, allergens });
+  await addPrepTask({
+    title,
+    category,
+    priority,
+    comment,
+    allergens
+  });
 
   addPrepForm.reset();
   allergenDropdown.hidden = true;
@@ -75,18 +90,18 @@ const areasRef = doc(db, "settings", "areas");
 const areasList = document.getElementById("areasList");
 const newAreaInput = document.getElementById("newArea");
 
-async function renderAreas(areas) {
+function renderAreas(areas) {
   areasList.innerHTML = "";
   categorySelect.innerHTML = "";
 
-  areas.forEach(a => {
+  areas.forEach(area => {
     const opt = document.createElement("option");
-    opt.value = a;
-    opt.textContent = a;
+    opt.value = area;
+    opt.textContent = area;
     categorySelect.appendChild(opt);
 
     const row = document.createElement("div");
-    row.textContent = a;
+    row.textContent = area;
     areasList.appendChild(row);
   });
 }
@@ -97,14 +112,14 @@ onSnapshot(areasRef, snap => {
 });
 
 document.getElementById("addAreaBtn").onclick = async () => {
-  const val = newAreaInput.value.trim().toLowerCase();
-  if (!val) return;
+  const value = newAreaInput.value.trim().toLowerCase();
+  if (!value) return;
 
   const snap = await getDoc(areasRef);
   const areas = snap.exists() ? snap.data().areas : [];
 
-  if (!areas.includes(val)) {
-    await setDoc(areasRef, { areas: [...areas, val] });
+  if (!areas.includes(value)) {
+    await setDoc(areasRef, { areas: [...areas, value] });
   }
 
   newAreaInput.value = "";
