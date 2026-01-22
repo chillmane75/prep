@@ -7,18 +7,14 @@ import {
   serverTimestamp,
   getDocs,
   writeBatch,
-  deleteDoc
+  deleteDoc,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* ---------- PREP ---------- */
-
+/* PREP */
 export async function addPrepTask(data) {
   await addDoc(collection(db, "prepTasks"), {
-    title: data.title,
-    category: data.category,
-    priority: data.priority,
-    comment: data.comment || "",
-    allergens: data.allergens || [],
+    ...data,
     status: "active",
     createdAt: serverTimestamp(),
     completedAt: null
@@ -43,16 +39,59 @@ export async function deletePrep(id) {
   await deleteDoc(doc(db, "prepTasks", id));
 }
 
-/* ---------- HARD RESET ---------- */
+/* AREA HELPERS */
+export async function getPrepByArea(area) {
+  const snap = await getDocs(collection(db, "prepTasks"));
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .filter(p => p.category === area);
+}
 
-export async function resetEverything() {
+export async function movePrepToArea(from, to) {
+  const snap = await getDocs(collection(db, "prepTasks"));
   const batch = writeBatch(db);
 
-  const prepSnap = await getDocs(collection(db, "prepTasks"));
-  prepSnap.forEach(d => batch.delete(d.ref));
-
-  const settingsSnap = await getDocs(collection(db, "settings"));
-  settingsSnap.forEach(d => batch.delete(d.ref));
+  snap.forEach(d => {
+    if (d.data().category === from) {
+      batch.update(d.ref, { category: to });
+    }
+  });
 
   await batch.commit();
+}
+
+export async function deletePrepInArea(area) {
+  const snap = await getDocs(collection(db, "prepTasks"));
+  const batch = writeBatch(db);
+
+  snap.forEach(d => {
+    if (d.data().category === area) {
+      batch.delete(d.ref);
+    }
+  });
+
+  await batch.commit();
+}
+
+export async function deleteArea(area) {
+  const ref = doc(db, "settings", "areas");
+  const snap = await getDocs(collection(db, "settings"));
+
+  const areasDoc = snap.docs.find(d => d.id === "areas");
+  if (!areasDoc) return;
+
+  const areas = areasDoc.data().areas.filter(a => a !== area);
+  await setDoc(ref, { areas });
+}
+
+export async function addArea(name) {
+  const ref = doc(db, "settings", "areas");
+  const snap = await getDocs(collection(db, "settings"));
+
+  const areasDoc = snap.docs.find(d => d.id === "areas");
+  const areas = areasDoc ? areasDoc.data().areas : [];
+
+  if (!areas.includes(name)) {
+    await setDoc(ref, { areas: [...areas, name] });
+  }
 }
