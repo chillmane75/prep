@@ -6,8 +6,11 @@ import {
   doc,
   serverTimestamp,
   getDocs,
-  writeBatch
+  writeBatch,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* ---------- PREP ---------- */
 
 export async function addPrepTask(data) {
   await addDoc(collection(db, "prepTasks"), {
@@ -29,13 +32,27 @@ export async function markDone(id) {
   });
 }
 
-export async function resetAllPrep() {
-  const snap = await getDocs(collection(db, "prepTasks"));
+export async function undoDone(id) {
+  await updateDoc(doc(db, "prepTasks", id), {
+    status: "active",
+    completedAt: null
+  });
+}
+
+export async function deletePrep(id) {
+  await deleteDoc(doc(db, "prepTasks", id));
+}
+
+/* ---------- HARD RESET ---------- */
+
+export async function resetEverything() {
   const batch = writeBatch(db);
 
-  snap.forEach(d => {
-    batch.delete(d.ref);
-  });
+  const prepSnap = await getDocs(collection(db, "prepTasks"));
+  prepSnap.forEach(d => batch.delete(d.ref));
+
+  const settingsSnap = await getDocs(collection(db, "settings"));
+  settingsSnap.forEach(d => batch.delete(d.ref));
 
   await batch.commit();
 }
