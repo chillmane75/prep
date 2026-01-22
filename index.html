@@ -33,7 +33,7 @@
   </section>
 </main>
 
-<!-- ADD PREP -->
+<!-- ================= ADD PREP ================= -->
 <section id="addPrepModal" hidden>
   <form id="addPrepForm" class="add-prep-card">
     <h2>Ny prep</h2>
@@ -80,15 +80,38 @@
   </form>
 </section>
 
-<!-- SETTINGS -->
+<!-- ================= SETTINGS ================= -->
 <section id="settingsModal" hidden>
   <div class="settings-container">
     <h2>Innstillinger</h2>
+
+    <h3>Områder</h3>
     <div id="areasList"></div>
+
     <input id="newArea" placeholder="Nytt område">
     <button id="addAreaBtn">Legg til område</button>
-    <button id="resetBtn" class="danger">Nullstill hele prep-listen</button>
+
+    <hr>
+
+    <button id="resetBtn" class="danger">
+      Nullstill ALT (prep + områder)
+    </button>
+
     <button id="closeSettings">Lukk</button>
+  </div>
+</section>
+
+<!-- ================= AREA DELETE FLOW POPUP ================= -->
+<section id="areaFlowModal" hidden>
+  <div class="add-prep-card">
+    <h2 id="areaFlowTitle"></h2>
+
+    <div id="areaFlowBody"></div>
+
+    <div class="actions">
+      <button id="areaFlowBack" class="secondary">Tilbake</button>
+      <button id="areaFlowCancel" class="secondary">Avbryt</button>
+    </div>
   </div>
 </section>
 
