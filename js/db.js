@@ -4,7 +4,9 @@ import {
   addDoc,
   updateDoc,
   doc,
-  serverTimestamp
+  serverTimestamp,
+  getDocs,
+  writeBatch
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 export async function addPrepTask(data) {
@@ -25,4 +27,12 @@ export async function markDone(id) {
     status: "done",
     completedAt: serverTimestamp()
   });
+}
+
+export async function resetAllPrep() {
+  const snap = await getDocs(collection(db, "prepTasks"));
+  const batch = writeBatch(db);
+
+  snap.forEach(d => batch.delete(d.ref));
+  await batch.commit();
 }
