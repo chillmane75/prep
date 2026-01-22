@@ -1,6 +1,3 @@
-/*********************************************************
- * FIREBASE (klassisk – ingen modules)
- *********************************************************/
 (function () {
   const firebaseConfig = {
     apiKey: "AIzaSyCVNXfmezAwYXPFzu7b_mBlUWCDNnVek_s",
@@ -33,7 +30,6 @@
 
     const activeList = document.getElementById("activeList");
     const doneList = document.getElementById("doneList");
-    const toggleDoneBtn = document.getElementById("toggleDone");
     const areaTabs = document.getElementById("areaTabs");
 
     const addPrepModal = document.getElementById("addPrepModal");
@@ -42,20 +38,19 @@
 
     const settingsModal = document.getElementById("settingsModal");
     const mainContent = document.getElementById("mainContent");
+    const areasList = document.getElementById("areasList");
 
-    document.getElementById("openAddForm").onclick = () => {
-      addPrepModal.hidden = false;
-    };
+    /* ---------- UI ---------- */
 
+    document.getElementById("openAddForm").onclick = () => addPrepModal.hidden = false;
     document.getElementById("cancelAdd").onclick = () => {
       addPrepModal.hidden = true;
       addPrepForm.reset();
       allergenDropdown.hidden = true;
     };
 
-    document.getElementById("toggleAllergens").onclick = () => {
+    document.getElementById("toggleAllergens").onclick = () =>
       allergenDropdown.hidden = !allergenDropdown.hidden;
-    };
 
     document.getElementById("openSettings").onclick = () => {
       settingsModal.hidden = false;
@@ -67,24 +62,26 @@
       mainContent.hidden = false;
     };
 
-    toggleDoneBtn.onclick = () => {
+    document.getElementById("toggleDone").onclick = () => {
       showDone = !showDone;
       doneList.hidden = !showDone;
     };
 
     document.getElementById("printBtn").onclick = () => window.print();
 
+    /* ---------- ADD PREP ---------- */
+
     addPrepForm.onsubmit = async (e) => {
       e.preventDefault();
 
-      const title = document.getElementById("title").value.trim();
-      const category = document.getElementById("category").value;
-      const priority = document.getElementById("priority").value;
-      const comment = document.getElementById("comment").value.trim();
+      const title = titleInput.value.trim();
+      const category = categorySelect.value;
+      const priority = prioritySelect.value;
+      const comment = commentInput.value.trim();
 
       const allergens = Array.from(
         allergenDropdown.querySelectorAll("input:checked")
-      ).map(cb => cb.value);
+      ).map(c => c.value);
 
       await db.collection("prepTasks").add({
         title,
@@ -102,6 +99,12 @@
       addPrepModal.hidden = true;
     };
 
+    /* ---------- RENDER PREP ---------- */
+
+    function priorityWeight(p) {
+      return p === "high" ? 1 : p === "normal" ? 2 : 3;
+    }
+
     function render() {
       activeList.innerHTML = "";
       doneList.innerHTML = "";
@@ -110,70 +113,98 @@
         ? allTasks.filter(t => t.category === currentArea)
         : allTasks;
 
-      visible.forEach(task => {
-        const el = document.createElement("div");
-        el.className = "task-row";
+      const active = visible
+        .filter(t => t.status === "active")
+        .sort((a, b) => priorityWeight(a.priority) - priorityWeight(b.priority));
 
-        el.innerHTML = `
-          <div>
-            <strong>${task.title}</strong>
-            ${task.comment ? `<div>${task.comment}</div>` : ""}
-          </div>
-          <button>${task.status === "active" ? "GJORT" : "ANGRE"}</button>
-        `;
+      const done = visible.filter(t => t.status === "done");
 
-        el.querySelector("button").onclick = async () => {
-          await db.collection("prepTasks").doc(task.id).update({
-            status: task.status === "active" ? "done" : "active",
-            completedAt:
-              task.status === "active"
-                ? firebase.firestore.FieldValue.serverTimestamp()
-                : null
-          });
-        };
-
-        (task.status === "active" ? activeList : doneList).appendChild(el);
-      });
+      active.forEach(t => renderTask(t, activeList));
+      done.forEach(t => renderTask(t, doneList));
     }
 
-    db.collection("prepTasks")
-      .orderBy("createdAt")
-      .onSnapshot(snap => {
-        allTasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        render();
-      });
+    function renderTask(task, container) {
+      const card = document.createElement("div");
+      card.className = "prep-card";
 
-    db.collection("settings")
-      .doc("areas")
-      .onSnapshot(doc => {
-        const areas = doc.exists ? doc.data().areas : [];
+      card.innerHTML = `
+        <div class="prep-main">
+          <div class="prep-title">${task.title}</div>
+          ${task.comment ? `<div class="prep-comment">${task.comment}</div>` : ""}
+        </div>
+        <div class="prep-actions">
+          <button class="done-btn">${task.status === "active" ? "GJORT" : "ANGRE"}</button>
+        </div>
+      `;
 
-        areaTabs.innerHTML = "";
-        document.getElementById("category").innerHTML = "";
-
-        const areasList = document.getElementById("areasList");
-        areasList.innerHTML = "";
-
-        areas.forEach(a => {
-          const tab = document.createElement("button");
-          tab.textContent = a;
-          tab.onclick = () => {
-            currentArea = currentArea === a ? null : a;
-            render();
-          };
-          areaTabs.appendChild(tab);
-
-          const opt = document.createElement("option");
-          opt.value = a;
-          opt.textContent = a;
-          document.getElementById("category").appendChild(opt);
-
-          const row = document.createElement("div");
-          row.className = "settings-area-row";
-          row.textContent = a;
-          areasList.appendChild(row);
+      card.querySelector("button").onclick = async () => {
+        await db.collection("prepTasks").doc(task.id).update({
+          status: task.status === "active" ? "done" : "active",
+          completedAt:
+            task.status === "active"
+              ? firebase.firestore.FieldValue.serverTimestamp()
+              : null
         });
+      };
+
+      container.appendChild(card);
+    }
+
+    /* ---------- SNAPSHOTS ---------- */
+
+    db.collection("prepTasks").onSnapshot(snap => {
+      allTasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      render();
+    });
+
+    const categorySelect = document.getElementById("category");
+    const titleInput = document.getElementById("title");
+    const prioritySelect = document.getElementById("priority");
+    const commentInput = document.getElementById("comment");
+
+    db.collection("settings").doc("areas").onSnapshot(doc => {
+      const areas = doc.exists ? doc.data().areas : [];
+
+      areaTabs.innerHTML = "";
+      categorySelect.innerHTML = "";
+      areasList.innerHTML = "";
+
+      areas.forEach(a => {
+        const tab = document.createElement("button");
+        tab.textContent = a;
+        tab.onclick = () => {
+          currentArea = currentArea === a ? null : a;
+          render();
+        };
+        areaTabs.appendChild(tab);
+
+        const opt = document.createElement("option");
+        opt.value = a;
+        opt.textContent = a;
+        categorySelect.appendChild(opt);
+
+        const row = document.createElement("div");
+        row.className = "settings-area-row";
+        row.innerHTML = `
+          <span>${a}</span>
+          <button class="danger">Slett</button>
+        `;
+
+        row.querySelector("button").onclick = () => {
+          if (!confirm(`Slette området "${a}"?`)) return;
+          removeArea(a);
+        };
+
+        areasList.appendChild(row);
       });
+    });
+
+    async function removeArea(area) {
+      const ref = db.collection("settings").doc("areas");
+      const snap = await ref.get();
+      const areas = snap.data().areas.filter(a => a !== area);
+      await ref.set({ areas });
+    }
 
     document.getElementById("addAreaBtn").onclick = async () => {
       const input = document.getElementById("newArea");
@@ -187,7 +218,6 @@
       if (!areas.includes(value)) {
         await ref.set({ areas: [...areas, value] });
       }
-
       input.value = "";
     };
 
