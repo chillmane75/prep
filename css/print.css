@@ -11,6 +11,7 @@ body {
 
 /* Skjul UI */
 header,
+footer,
 button,
 #addPrepModal {
   display: none !important;
@@ -58,4 +59,7 @@ h2 {
 }
 .task.low {
   border-left: 1px solid #000;
+}
+section {
+  margin-bottom: 8mm;
 }
