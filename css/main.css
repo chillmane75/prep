@@ -4,8 +4,8 @@
   --text: #eaeaf0;
   --muted: #9aa0aa;
   --accent: #4f8cff;
-  --danger: #ff5c5c;
-  --ok: #3ddc97;
+  --danger: #c62828;
+  --ok: #2e7d32;
 }
 
 * {
@@ -17,7 +17,7 @@ body {
   padding: 1rem;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
 header {
@@ -27,8 +27,9 @@ header {
   margin-bottom: 1rem;
 }
 
-h1, h2 {
-  margin: 0 0 .5rem 0;
+.header-actions {
+  display: flex;
+  gap: .5rem;
 }
 
 button {
@@ -45,6 +46,14 @@ button:hover {
   opacity: .9;
 }
 
+button.danger {
+  background: var(--danger);
+}
+
+main {
+  margin-bottom: 2rem;
+}
+
 .task {
   background: var(--card);
   border-radius: 14px;
@@ -52,9 +61,9 @@ button:hover {
   margin-bottom: .75rem;
 }
 
-.task.high { border-left: 5px solid var(--danger); }
-.task.normal { border-left: 5px solid #f5a623; }
-.task.low { border-left: 5px solid var(--ok); }
+.task.high { border-left: 5px solid #d32f2f; }
+.task.normal { border-left: 5px solid #f9a825; }
+.task.low { border-left: 5px solid #388e3c; }
 
 .task-header {
   display: flex;
@@ -63,15 +72,14 @@ button:hover {
 }
 
 .category {
+  font-size: .85rem;
   color: var(--muted);
-  font-size: .9rem;
 }
 
 .done-btn {
   width: 100%;
   margin-top: .75rem;
   background: var(--ok);
-  font-size: 1.1rem;
 }
 
 .undo-btn {
@@ -88,11 +96,9 @@ button:hover {
   justify-content: center;
 }
 
-/* Kun når modalen er synlig */
 #addPrepModal:not([hidden]) {
   display: flex;
 }
-
 
 #addPrepModal form {
   background: var(--card);
@@ -110,4 +116,9 @@ input, select, textarea {
   color: var(--text);
   border: 1px solid #333;
   border-radius: 8px;
+}
+
+footer {
+  margin-top: 2rem;
+  text-align: center;
 }
