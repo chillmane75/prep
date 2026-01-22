@@ -1,129 +1,121 @@
-import { addPrepTask, resetEverything } from "./db.js";
-import { db } from "./firebase.js";
 import {
-  doc,
-  getDoc,
-  setDoc,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  getPrepByArea,
+  movePrepToArea,
+  deletePrepInArea,
+  deleteArea,
+  addArea
+} from "./db.js";
 
-/* ---------- ELEMENTER ---------- */
+const areaFlowModal = document.getElementById("areaFlowModal");
+const areaFlowTitle = document.getElementById("areaFlowTitle");
+const areaFlowBody = document.getElementById("areaFlowBody");
+const backBtn = document.getElementById("areaFlowBack");
+const cancelBtn = document.getElementById("areaFlowCancel");
 
-const addPrepModal = document.getElementById("addPrepModal");
-const addPrepForm = document.getElementById("addPrepForm");
+let flowStack = [];
+let currentArea = null;
 
-const titleInput = document.getElementById("title");
-const categorySelect = document.getElementById("category");
-const prioritySelect = document.getElementById("priority");
-const commentInput = document.getElementById("comment");
-const allergenDropdown = document.getElementById("allergenDropdown");
+function showFlow(title, bodyFn) {
+  areaFlowTitle.textContent = title;
+  areaFlowBody.innerHTML = "";
+  bodyFn();
+  areaFlowModal.hidden = false;
+}
 
-const areasList = document.getElementById("areasList");
-const newAreaInput = document.getElementById("newArea");
+function pushFlow(step) {
+  flowStack.push(step);
+  step();
+}
 
-/* ---------- ADD PREP ---------- */
-
-document.getElementById("openAddForm").onclick = () => {
-  addPrepModal.hidden = false;
+backBtn.onclick = () => {
+  flowStack.pop();
+  const prev = flowStack.pop();
+  if (prev) pushFlow(prev);
+  else areaFlowModal.hidden = true;
 };
 
-document.getElementById("cancelAdd").onclick = () => {
-  addPrepModal.hidden = true;
-  addPrepForm.reset();
-  allergenDropdown.hidden = true;
+cancelBtn.onclick = () => {
+  flowStack = [];
+  areaFlowModal.hidden = true;
 };
 
-document.getElementById("toggleAllergens").onclick = () => {
-  allergenDropdown.hidden = !allergenDropdown.hidden;
-};
+/* ENTRY POINT */
+window.startDeleteAreaFlow = async (area) => {
+  currentArea = area;
+  flowStack = [];
 
-addPrepForm.onsubmit = async (e) => {
-  e.preventDefault();
+  const prep = await getPrepByArea(area);
 
-  await addPrepTask({
-    title: titleInput.value.trim(),
-    category: categorySelect.value,
-    priority: prioritySelect.value,
-    comment: commentInput.value.trim(),
-    allergens: Array.from(
-      allergenDropdown.querySelectorAll("input:checked")
-    ).map(cb => cb.value)
+  pushFlow(() => {
+    if (prep.length === 0) {
+      showFlow(`Slette område "${area}"?`, () => {
+        const btn = document.createElement("button");
+        btn.textContent = "Slett område";
+        btn.className = "danger";
+        btn.onclick = async () => {
+          await deleteArea(area);
+          cancelBtn.onclick();
+        };
+        areaFlowBody.appendChild(btn);
+      });
+    } else {
+      showFlow(`Område "${area}" har prep`, () => {
+        const delAll = document.createElement("button");
+        delAll.textContent = "Slett område og all prep";
+        delAll.className = "danger";
+        delAll.onclick = async () => {
+          await deletePrepInArea(area);
+          await deleteArea(area);
+          cancelBtn.onclick();
+        };
+
+        const moveExisting = document.createElement("button");
+        moveExisting.textContent = "Flytt til eksisterende område";
+        moveExisting.onclick = () => pushFlow(moveToExisting);
+
+        const moveNew = document.createElement("button");
+        moveNew.textContent = "Flytt til nytt område";
+        moveNew.onclick = () => pushFlow(moveToNew);
+
+        areaFlowBody.append(delAll, moveExisting, moveNew);
+      });
+    }
   });
-
-  addPrepForm.reset();
-  allergenDropdown.hidden = true;
-  addPrepModal.hidden = true;
 };
 
-/* ---------- SETTINGS OPEN / CLOSE ---------- */
+function moveToExisting() {
+  showFlow("Velg nytt område", () => {
+    const select = document.createElement("select");
+    document.querySelectorAll("#category option").forEach(o => {
+      if (o.value !== currentArea) select.appendChild(o.cloneNode(true));
+    });
 
-const settingsModal = document.getElementById("settingsModal");
-const mainContent = document.getElementById("mainContent");
+    const ok = document.createElement("button");
+    ok.textContent = "Flytt";
+    ok.onclick = async () => {
+      await movePrepToArea(currentArea, select.value);
+      await deleteArea(currentArea);
+      cancelBtn.onclick();
+    };
 
-document.getElementById("openSettings").onclick = () => {
-  settingsModal.hidden = false;
-  mainContent.hidden = true;
-};
-
-document.getElementById("closeSettings").onclick = () => {
-  settingsModal.hidden = true;
-  mainContent.hidden = false;
-};
-
-/* ---------- HARD RESET ---------- */
-
-document.getElementById("resetBtn").onclick = async () => {
-  if (!confirm("Dette sletter ALL prep og ALLE områder. Fortsette?")) return;
-  await resetEverything();
-};
-
-/* ---------- OMRÅDER ---------- */
-
-const areasRef = doc(db, "settings", "areas");
-
-/* Render områder + category dropdown */
-function renderAreas(areas) {
-  // Settings-listen
-  areasList.innerHTML = "";
-  areas.forEach(a => {
-    const div = document.createElement("div");
-    div.textContent = a;
-    areasList.appendChild(div);
-  });
-
-  // Add-prep dropdown
-  categorySelect.innerHTML = "";
-  areas.forEach(a => {
-    const opt = document.createElement("option");
-    opt.value = a;
-    opt.textContent = a;
-    categorySelect.appendChild(opt);
+    areaFlowBody.append(select, ok);
   });
 }
 
-/* Snapshot */
-onSnapshot(areasRef, snap => {
-  if (!snap.exists()) {
-    // VIKTIG: nullstill dropdown når områder er slettet
-    renderAreas([]);
-    return;
-  }
+function moveToNew() {
+  showFlow("Nytt område", () => {
+    const input = document.createElement("input");
+    input.placeholder = "Navn på område";
 
-  const areas = snap.data().areas || [];
-  renderAreas(areas);
-});
+    const ok = document.createElement("button");
+    ok.textContent = "Opprett og flytt";
+    ok.onclick = async () => {
+      await addArea(input.value.trim());
+      await movePrepToArea(currentArea, input.value.trim());
+      await deleteArea(currentArea);
+      cancelBtn.onclick();
+    };
 
-/* Legg til område */
-document.getElementById("addAreaBtn").onclick = async () => {
-  const value = newAreaInput.value.trim().toLowerCase();
-  if (!value) return;
-
-  const snap = await getDoc(areasRef);
-  const areas = snap.exists() ? snap.data().areas : [];
-
-  if (!areas.includes(value)) {
-    await setDoc(areasRef, { areas: [...areas, value] });
-  }
-
-  newAreaInput.value = "";
-};
+    areaFlowBody.append(input, ok);
+  });
+}
