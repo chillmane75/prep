@@ -7,29 +7,32 @@ listenTasks(tasks => {
   activeList.innerHTML = "";
   doneList.innerHTML = "";
 
-  tasks
-    .sort((a, b) => a.priority === "high" ? -1 : 1)
-    .forEach(t => {
-      const el = document.createElement("div");
-      el.className = "task " + t.priority;
-      el.innerHTML = `
-        <strong>${t.title}</strong>
-        <small>${t.category}</small>
-        <p>${t.comment || ""}</p>
-      `;
+  tasks.forEach(t => {
+    const el = document.createElement("div");
+    el.className = `task ${t.priority}`;
 
-      if (t.status === "active") {
-        const btn = document.createElement("button");
-        btn.textContent = "GJORT";
-        btn.onclick = () => markDone(t.id);
-        el.appendChild(btn);
-        activeList.appendChild(el);
-      } else {
-        const btn = document.createElement("button");
-        btn.textContent = "Angre";
-        btn.onclick = () => undoTask(t.id);
-        el.appendChild(btn);
-        doneList.appendChild(el);
-      }
-    });
+    el.innerHTML = `
+      <div class="task-header">
+        <strong>${t.title}</strong>
+        <span class="category">${t.category}</span>
+      </div>
+      ${t.comment ? `<p>${t.comment}</p>` : ""}
+    `;
+
+    const btn = document.createElement("button");
+
+    if (t.status === "active") {
+      btn.textContent = "GJORT";
+      btn.className = "done-btn";
+      btn.onclick = () => markDone(t.id);
+      el.appendChild(btn);
+      activeList.appendChild(el);
+    } else {
+      btn.textContent = "Angre";
+      btn.className = "undo-btn";
+      btn.onclick = () => undoTask(t.id);
+      el.appendChild(btn);
+      doneList.appendChild(el);
+    }
+  });
 });
