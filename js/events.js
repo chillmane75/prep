@@ -1,9 +1,10 @@
-import { addPrepTask } from "./db.js";
+import { addPrepTask, resetAllPrep } from "./db.js";
 import { db } from "./firebase.js";
 import {
   doc,
   getDoc,
-  setDoc
+  setDoc,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* ---------- ADD PREP ---------- */
@@ -11,6 +12,7 @@ import {
 const addPrepModal = document.getElementById("addPrepModal");
 const addPrepForm = document.getElementById("addPrepForm");
 const allergenDropdown = document.getElementById("allergenDropdown");
+const categorySelect = document.getElementById("category");
 
 document.getElementById("openAddForm").onclick = () => {
   addPrepModal.hidden = false;
@@ -26,32 +28,26 @@ document.getElementById("toggleAllergens").onclick = () => {
   allergenDropdown.hidden = !allergenDropdown.hidden;
 };
 
-addPrepForm.onsubmit = async (e) => {
+addPrepForm.onsubmit = async e => {
   e.preventDefault();
 
-  const title = document.getElementById("title").value.trim();
-  const category = document.getElementById("category").value;
-  const priority = document.getElementById("priority").value;
-  const comment = document.getElementById("comment").value.trim();
+  const title = titleInput.value.trim();
+  const category = categorySelect.value;
+  const priority = prioritySelect.value;
+  const comment = commentInput.value.trim();
 
   const allergens = Array.from(
     allergenDropdown.querySelectorAll("input:checked")
   ).map(cb => cb.value);
 
-  await addPrepTask({
-    title,
-    category,
-    priority,
-    comment,
-    allergens
-  });
+  await addPrepTask({ title, category, priority, comment, allergens });
 
   addPrepForm.reset();
   allergenDropdown.hidden = true;
   addPrepModal.hidden = true;
 };
 
-/* ---------- SETTINGS (ÅPNE / LUKK) ---------- */
+/* ---------- SETTINGS ---------- */
 
 const settingsModal = document.getElementById("settingsModal");
 const mainContent = document.getElementById("mainContent");
@@ -66,58 +62,50 @@ document.getElementById("closeSettings").onclick = () => {
   mainContent.hidden = false;
 };
 
+/* ---------- RESET ---------- */
+
+document.getElementById("resetBtn").onclick = async () => {
+  if (!confirm("Er du sikker?")) return;
+  await resetAllPrep();
+};
+
 /* ---------- OMRÅDER ---------- */
 
 const areasRef = doc(db, "settings", "areas");
 const areasList = document.getElementById("areasList");
 const newAreaInput = document.getElementById("newArea");
 
-async function renderAreas() {
-  const snap = await getDoc(areasRef);
-  const areas = snap.exists() ? snap.data().areas : [];
-
+async function renderAreas(areas) {
   areasList.innerHTML = "";
+  categorySelect.innerHTML = "";
 
-  areas.forEach(area => {
+  areas.forEach(a => {
+    const opt = document.createElement("option");
+    opt.value = a;
+    opt.textContent = a;
+    categorySelect.appendChild(opt);
+
     const row = document.createElement("div");
-    row.style.display = "flex";
-    row.style.justifyContent = "space-between";
-    row.style.marginBottom = ".25rem";
-
-    const name = document.createElement("span");
-    name.textContent = area;
-
-    const del = document.createElement("button");
-    del.textContent = "✕";
-    del.className = "danger";
-    del.onclick = async () => {
-      const updated = areas.filter(a => a !== area);
-      await setDoc(areasRef, { areas: updated });
-      renderAreas();
-    };
-
-    row.append(name, del);
+    row.textContent = a;
     areasList.appendChild(row);
   });
 }
 
+onSnapshot(areasRef, snap => {
+  if (!snap.exists()) return;
+  renderAreas(snap.data().areas || []);
+});
+
 document.getElementById("addAreaBtn").onclick = async () => {
-  const value = newAreaInput.value.trim().toLowerCase();
-  if (!value) return;
+  const val = newAreaInput.value.trim().toLowerCase();
+  if (!val) return;
 
   const snap = await getDoc(areasRef);
   const areas = snap.exists() ? snap.data().areas : [];
 
-  if (areas.includes(value)) return;
-
-  await setDoc(areasRef, {
-    areas: [...areas, value]
-  });
+  if (!areas.includes(val)) {
+    await setDoc(areasRef, { areas: [...areas, val] });
+  }
 
   newAreaInput.value = "";
-  renderAreas();
 };
-
-/* ---------- INIT ---------- */
-
-renderAreas();
