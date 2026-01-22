@@ -58,6 +58,11 @@ button.danger {
   z-index: 10;
 }
 
+.settings-area-row {
+  padding: 6px 0;
+  color: #e5e7eb;
+}
+
 /* -------- ADD PREP UI (NY, ISOLERT) -------- */
 
 .add-prep-card {
