@@ -1,25 +1,108 @@
+:root {
+  --bg: #0f1115;
+  --card: #1a1d24;
+  --text: #eaeaf0;
+  --muted: #9aa0aa;
+  --accent: #4f8cff;
+  --danger: #ff5c5c;
+  --ok: #3ddc97;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: system-ui, sans-serif;
-  margin: 1rem;
+  margin: 0;
+  padding: 1rem;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 1rem;
+}
+
+h1, h2 {
+  margin: 0 0 .5rem 0;
+}
+
+button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: .6rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: .9;
 }
 
 .task {
-  border: 1px solid #ccc;
+  background: var(--card);
+  border-radius: 14px;
   padding: 1rem;
-  margin-bottom: .5rem;
+  margin-bottom: .75rem;
 }
 
-.task.high { border-left: 6px solid red; }
-.task.normal { border-left: 6px solid orange; }
-.task.low { border-left: 6px solid green; }
+.task.high { border-left: 5px solid var(--danger); }
+.task.normal { border-left: 5px solid #f5a623; }
+.task.low { border-left: 5px solid var(--ok); }
 
-button {
-  font-size: 1.2rem;
-  padding: .5rem 1rem;
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category {
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+.done-btn {
+  width: 100%;
+  margin-top: .75rem;
+  background: var(--ok);
+  font-size: 1.1rem;
+}
+
+.undo-btn {
+  width: 100%;
+  margin-top: .75rem;
+  background: var(--danger);
+}
+
+#addPrepModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#addPrepModal form {
+  background: var(--card);
+  padding: 1.5rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+}
+
+input, select, textarea {
+  width: 100%;
+  margin-bottom: .75rem;
+  padding: .6rem;
+  background: #111;
+  color: var(--text);
+  border: 1px solid #333;
+  border-radius: 8px;
 }
