@@ -1,7 +1,61 @@
-button, header {
-  display: none;
+@page {
+  size: A4;
+  margin: 16mm;
 }
 
+body {
+  background: white !important;
+  color: black !important;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Skjul UI */
+header,
+button,
+#addPrepModal {
+  display: none !important;
+}
+
+/* Tittel */
+h1 {
+  font-size: 20pt;
+  margin-bottom: 10mm;
+}
+
+/* Seksjoner */
+h2 {
+  font-size: 14pt;
+  margin-top: 10mm;
+  border-bottom: 1px solid #000;
+  padding-bottom: 2mm;
+}
+
+/* Oppgaver */
 .task {
+  border: 1px solid #000;
+  border-radius: 6px;
+  padding: 6mm;
+  margin-bottom: 4mm;
   page-break-inside: avoid;
+}
+
+.task p {
+  margin: 2mm 0 0 0;
+  font-size: 10pt;
+}
+
+.task .category {
+  font-size: 9pt;
+  color: #444;
+}
+
+/* Prioritet (kun strek, ikke farger) */
+.task.high {
+  border-left: 5px solid #000;
+}
+.task.normal {
+  border-left: 3px solid #000;
+}
+.task.low {
+  border-left: 1px solid #000;
 }
