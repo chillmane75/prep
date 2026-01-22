@@ -125,3 +125,40 @@ button.danger {
 .priority-high { border-left: 6px solid #fff; }
 .priority-normal { border-left: 3px solid #fff; }
 .priority-low { border-left: 1px solid #fff; }
+
+/* === FASE 3 UI === */
+
+.prep-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1b1e24;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.prep-title {
+  font-weight: 600;
+}
+
+.prep-comment {
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+.done-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+}
+
+.settings-area-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  color: #e5e7eb;
+}
