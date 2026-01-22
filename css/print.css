@@ -1,1 +1,7 @@
+button, header {
+  display: none;
+}
 
+.task {
+  page-break-inside: avoid;
+}
