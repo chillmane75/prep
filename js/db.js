@@ -1,29 +1,21 @@
 import { db } from "./firebase.js";
 import {
-  collection,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  getDocs,
-  onSnapshot,
-  serverTimestamp
+  collection, doc, addDoc, updateDoc, deleteDoc,
+  getDocs, getDoc, setDoc, onSnapshot, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const col = collection(db, "prepTasks");
+const tasksCol = collection(db, "prepTasks");
+const areasDoc = doc(db, "settings", "areas");
 
-export function listenTasks(callback) {
-  onSnapshot(col, snap => {
-    const tasks = snap.docs.map(d => ({
-      id: d.id,
-      ...d.data()
-    }));
-    callback(tasks);
+/* TASKS */
+export function listenTasks(cb) {
+  onSnapshot(tasksCol, snap => {
+    cb(snap.docs.map(d => ({ id: d.id, ...d.data() })));
   });
 }
 
 export function addTask(data) {
-  return addDoc(col, {
+  return addDoc(tasksCol, {
     ...data,
     status: "active",
     createdAt: serverTimestamp(),
@@ -46,6 +38,21 @@ export function undoTask(id) {
 }
 
 export async function resetAllTasks() {
-  const snap = await getDocs(col);
+  const snap = await getDocs(tasksCol);
   await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
+}
+
+/* AREAS */
+export async function getAreas() {
+  const snap = await getDoc(areasDoc);
+  if (!snap.exists()) {
+    const defaults = ["grill", "kald", "dessert", "servering"];
+    await setDoc(areasDoc, { areas: defaults });
+    return defaults;
+  }
+  return snap.data().areas;
+}
+
+export function saveAreas(areas) {
+  return setDoc(areasDoc, { areas });
 }
