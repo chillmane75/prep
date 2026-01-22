@@ -1,59 +1,97 @@
-body {
-  font-family: system-ui, sans-serif;
-  margin: 0;
-  background: #f5f5f5;
+:root {
+  --bg: #0f1115;
+  --card: #1a1d24;
+  --text: #eaeaf0;
+  --muted: #9aa0aa;
+  --accent: #4f8cff;
+  --danger: #c62828;
+  --ok: #2e7d32;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 1rem;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+}
+
+/* HEADER */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
-  background: #111;
-  color: white;
 }
 
-button {
-  padding: 10px 14px;
-  font-size: 16px;
+.header-actions {
+  display: flex;
+  gap: .5rem;
 }
 
-.prep-item {
+/* AREA TABS */
+#areaTabs {
+  display: flex;
+  gap: .5rem;
+  margin: 1rem 0;
+}
+
+/* TASK ROW */
+.task-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: white;
-  padding: 10px;
-  margin: 6px 0;
+  background: var(--card);
+  padding: .75rem 1rem;
+  border-radius: 12px;
+  margin-bottom: .5rem;
 }
 
-.comment {
-  font-size: 0.9em;
-  opacity: 0.8;
-  margin-top: 4px;
+.task-info span {
+  display: block;
+  font-size: .8rem;
+  color: var(--muted);
 }
 
-.allergens {
-  font-size: 0.85em;
-  font-style: italic;
-  margin-top: 4px;
+.done-btn {
+  background: var(--ok);
 }
 
-.allergen-box {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  margin: 8px 0;
+button {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  padding: .5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
+button.danger {
+  background: var(--danger);
+}
+
+/* MODALS */
+#addPrepModal,
+#settingsModal {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  padding: 1rem;
+  z-index: 10;
+}
+
+/* PRIORITY */
 .priority-high {
-  border-left: 6px solid black;
+  border-left: 6px solid #fff;
 }
 
 .priority-normal {
-  border-left: 3px solid black;
+  border-left: 3px solid #fff;
 }
 
 .priority-low {
-  border-left: 1px solid black;
+  border-left: 1px solid #fff;
 }
