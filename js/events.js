@@ -1,5 +1,7 @@
 import { addPrepTask } from "./db.js";
 
+/* ---------- ADD PREP ---------- */
+
 const addPrepModal = document.getElementById("addPrepModal");
 const addPrepForm = document.getElementById("addPrepForm");
 const allergenDropdown = document.getElementById("allergenDropdown");
@@ -41,4 +43,19 @@ addPrepForm.onsubmit = async (e) => {
   addPrepForm.reset();
   allergenDropdown.hidden = true;
   addPrepModal.hidden = true;
+};
+
+/* ---------- SETTINGS ---------- */
+
+const settingsModal = document.getElementById("settingsModal");
+const mainContent = document.getElementById("mainContent");
+
+document.getElementById("openSettings").onclick = () => {
+  settingsModal.hidden = false;
+  mainContent.hidden = true;
+};
+
+document.getElementById("closeSettings").onclick = () => {
+  settingsModal.hidden = true;
+  mainContent.hidden = false;
 };
