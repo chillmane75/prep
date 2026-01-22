@@ -1,24 +1,34 @@
 import { addTask } from "./db.js";
 
 const modal = document.getElementById("addPrepModal");
+const openBtn = document.getElementById("openAddForm");
+const cancelBtn = document.getElementById("cancelAdd");
+const form = document.getElementById("addPrepForm");
+const toggleDoneBtn = document.getElementById("toggleDone");
+const doneList = document.getElementById("doneList");
 
-openAddForm.onclick = () => modal.hidden = false;
-cancelAdd.onclick = () => modal.hidden = true;
+openBtn.addEventListener("click", () => {
+  modal.hidden = false;
+});
 
-addPrepForm.onsubmit = e => {
+cancelBtn.addEventListener("click", () => {
+  modal.hidden = true;
+});
+
+form.addEventListener("submit", e => {
   e.preventDefault();
 
-  addTask({
-    title: title.value,
-    category: category.value,
-    priority: priority.value,
-    comment: comment.value
-  });
+  const title = document.getElementById("title").value;
+  const category = document.getElementById("category").value;
+  const priority = document.getElementById("priority").value;
+  const comment = document.getElementById("comment").value;
 
-  addPrepForm.reset();
+  addTask({ title, category, priority, comment });
+
+  form.reset();
   modal.hidden = true;
-};
+});
 
-toggleDone.onclick = () => {
+toggleDoneBtn.addEventListener("click", () => {
   doneList.hidden = !doneList.hidden;
-};
+});
