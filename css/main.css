@@ -1,1 +1,25 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 1rem;
+}
 
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: .5rem;
+}
+
+.task.high { border-left: 6px solid red; }
+.task.normal { border-left: 6px solid orange; }
+.task.low { border-left: 6px solid green; }
+
+button {
+  font-size: 1.2rem;
+  padding: .5rem 1rem;
+}
