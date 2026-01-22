@@ -1,1 +1,0 @@
-printBtn.onclick = () => window.print();
