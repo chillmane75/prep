@@ -33,6 +33,9 @@ export async function resetAllPrep() {
   const snap = await getDocs(collection(db, "prepTasks"));
   const batch = writeBatch(db);
 
-  snap.forEach(d => batch.delete(d.ref));
+  snap.forEach(d => {
+    batch.delete(d.ref);
+  });
+
   await batch.commit();
 }
